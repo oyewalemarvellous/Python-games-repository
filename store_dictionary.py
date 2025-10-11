@@ -14,6 +14,11 @@ while True:
         continue
     quantity=int(input("How many? "))
     goods[item]=quantity
+print("item     qty  amt   total")
+final_price= 0
 for key in goods:
-    print(key,goods[key],store[key]) 
-print(goods)
+    total=goods[key]*store[key]
+    print(key.ljust(9," "),str(goods[key]).ljust(3," "),"$"+str(store[key])," $" + str(round(total,2)))
+    final_price+=total 
+print(("$" + str(round(final_price,2))).rjust(24," ")) 
+    
