@@ -23,11 +23,13 @@ def draw():
         fruit.draw()
         
 def apple_positon():
+    apple=Actor("apple")
     apple.x=random.randint(10,450)
     apple.y=random.randint(0,10)
     fruits.append(apple)
     clock.schedule(apple_positon,random.randint(1,4))
 def orange_positon():
+    orange=Actor("orange")
     orange.x=random.randint(10,450)
     orange.y=random.randint(0,10)
     fruits.append(orange)
@@ -44,9 +46,9 @@ def update():
             fruits.remove(fruit)
             score +=1
     if keyboard.d:
-        basket.x +=4
+        basket.x +=6
     elif keyboard.a:
-        basket.x -=4
+        basket.x -=6
     
 
 clock.schedule(apple_positon,2)    
