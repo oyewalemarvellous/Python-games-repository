@@ -20,30 +20,29 @@ def draw():
     screen.draw.text(str(score),center=(55,10))
     basket.draw()
     for fruit in fruits:
-        time.sleep(5)
         fruit.draw()
         
 def apple_positon():
     apple.x=random.randint(10,450)
     apple.y=random.randint(0,10)
     fruits.append(apple)
-    clock.schedule(apple,random.randint(1,4))
+    clock.schedule(apple_positon,random.randint(1,4))
 def orange_positon():
     orange.x=random.randint(10,450)
     orange.y=random.randint(0,10)
     fruits.append(orange)
-    clock.schedule(orange,random.randint(1,4))        
+    clock.schedule(orange_positon,random.randint(1,4))        
 def update():
     global score
     global score_name
-    for fruit in fruits:
-        fruit.y += random.randint(1,5)
+    for fruit in fruits[:]:
+        fruit.y += 2
         if fruit.y > 600:
             fruits.remove(fruit)
-            collision = basket.colliderect(fruit)
-            if collision:
-                fruits.remove(fruit)
-                score +=1
+        collision = basket.colliderect(fruit)
+        if collision:
+            fruits.remove(fruit)
+            score +=1
     if keyboard.d:
         basket.x +=4
     elif keyboard.a:
