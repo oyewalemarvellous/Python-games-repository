@@ -8,7 +8,8 @@ HEIGHT=600
 basket=Actor("basket")
 apple=Actor("apple")
 orange= Actor("orange")
-fruits=[orange,apple]
+fruits=[]
+
 score_name="Score:"
 score = 0
 #position basket
@@ -22,21 +23,26 @@ def draw():
         time.sleep(5)
         fruit.draw()
         
-def fruit_positon():
-    for fruit in fruits:
-        fruit.x=random.randint(10,450)
-        fruit.y=random.randint(0,10)
-        
+def apple_positon():
+    apple.x=random.randint(10,450)
+    apple.y=random.randint(0,10)
+    fruits.append(apple)
+    clock.schedule(apple,random.randint(1,4))
+def orange_positon():
+    orange.x=random.randint(10,450)
+    orange.y=random.randint(0,10)
+    fruits.append(orange)
+    clock.schedule(orange,random.randint(1,4))        
 def update():
     global score
     global score_name
     for fruit in fruits:
         fruit.y += random.randint(1,5)
         if fruit.y > 600:
-            fruit_positon()
+            fruits.remove(fruit)
             collision = basket.colliderect(fruit)
             if collision:
-                fruit_positon()
+                fruits.remove(fruit)
                 score +=1
     if keyboard.d:
         basket.x +=4
@@ -44,7 +50,8 @@ def update():
         basket.x -=4
     
 
-    
+clock.schedule(apple_positon,2)    
+clock.schedule(orange_positon,4)
 
 
 
