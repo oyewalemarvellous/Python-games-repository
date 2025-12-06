@@ -13,6 +13,7 @@ score_name= "Scores :"
 score= 0
 speed= 2
 alien_troops=[]
+game_over = False 
 def alien_fleet():
     for i in range(8):
         for c in range(3):
@@ -22,17 +23,14 @@ def alien_fleet():
             alien_troops.append(alien)
 alien_fleet()
 def space_craft_collision():
+    global game_over
     for alien in alien_troops:
         if alien.colliderect(space_craft):
-            screen.clear()
-            screen.blit("game_over_screen",(0,0))
+            game_over = True
         elif alien.y > 600:
-            screen.clear()
-            screen.blit("game_over_screen",(0,0))
-        elif score < 0:
-            screen.clear()
-            screen.blit("game_over_screen",(0,0))   
-            return
+            game_over = True 
+        elif score < 0:  
+            game_over= True 
 def alien_shoot():
     shooter=random.choice(alien_troops)
     laser=Actor("blue_lazer_beam")
@@ -46,6 +44,11 @@ def max_score():
         screen.blit("mission_complete",(0,0))
         return
 def draw():
+    space_craft_collision()
+    if  game_over:
+        screen.clear()
+        screen.blit("game_over_screen",(0,0))
+        return
     screen.blit("space_background",(0,0))
     space_craft.draw()
     for alien in alien_troops:
@@ -54,7 +57,6 @@ def draw():
         lazer.draw()
     screen.draw.text(score_name,center=(25,10))
     screen.draw.text(str(score),center=(65,10))
-    space_craft_collision()
     max_score()
     for laser in alien_lazer:
         laser.draw()
@@ -76,12 +78,14 @@ def space_craft_wallcollision():
 def update():
     global score
     global speed
+    if  game_over:
+        return
     for lazer in lazers:
         lazer.y -=3
-        if lazer.y < 0:
+        if lazer.y < 0 and lazer in lazers:
             lazers.remove(lazer)
         for alien in alien_troops:
-            if alien.colliderect(lazer):
+            if alien.colliderect(lazer) and lazer in lazers:
                 lazers.remove(lazer)
                 alien_troops.remove(alien)
                 score +=2
