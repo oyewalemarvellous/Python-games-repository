@@ -16,23 +16,24 @@ boss_health= 500
 alien_troops=[]
 game_over = False
 is_boss= False
+
 def final_boss():
     global is_boss
     global boss 
-    if score >= 200 and boss is None:
-        boss= Actor("mother_ship")
-        boss.pos= (WIDTH/2,100)
-        is_boss= True
+    boss= Actor("mother_ship")
+    boss.pos= (WIDTH/2,100)
+    is_boss= True
 def boss_movement():
-    boss.y += 2
+    boss.y += 0.1
 
 def alien_fleet():
-    for i in range(8):
-        for c in range(3):
-            alien= Actor("alien_invader")
-            alien.x= 50 + i * 70
-            alien.y= 50 + c * 60
-            alien_troops.append(alien)
+    if not is_boss:
+        for i in range(8):
+            for c in range(3):
+                alien= Actor("alien_invader")
+                alien.x= 50 + i * 70
+                alien.y= 50 + c * 60
+                alien_troops.append(alien)
 alien_fleet()
 def space_craft_collision():
     global game_over
@@ -43,15 +44,14 @@ def space_craft_collision():
             game_over = True """
         elif score < 0:  
             game_over= True 
-        elif boss_health < 1:
-            game_over=True
 def alien_shoot():
-    shooter=random.choice(alien_troops)
-    laser=Actor("blue_lazer_beam")
-    laser.pos=(shooter.x,shooter.y)
-    alien_lazer.append(laser)
-    clock.schedule_interval(alien_shoot,3.0)
-clock.schedule(alien_shoot,3.0)
+    if not is_boss:
+        shooter=random.choice(alien_troops)
+        laser=Actor("blue_lazer_beam")
+        laser.pos=(shooter.x,shooter.y)
+        alien_lazer.append(laser)
+        clock.schedule(alien_shoot,1.0)
+clock.schedule(alien_shoot,1.0)
 def max_score():
     if score > 300:
         screen.clear()
@@ -71,7 +71,8 @@ def draw():
         lazer.draw()
     screen.draw.text(score_name,center=(25,10))
     screen.draw.text(str(score),center=(65,10))
-    if is_boss:
+    screen.draw.text(str(boss_health),center= (560,10))
+    if is_boss and boss_health  > 0:
         boss.draw()
     max_score()
     for laser in alien_lazer:
@@ -92,7 +93,8 @@ def space_craft_wallcollision():
     if space_craft.x < 0:
         space_craft.pos= (550,560)
 def update():
-    global boss
+    global is_boss
+    global boss_health
     global score
     global speed
     if  game_over:
@@ -101,7 +103,8 @@ def update():
         lazer.y -=3
         if is_boss:
             if boss.colliderect(lazer):
-                boss_health -= 50
+                lazers.remove(lazer)
+                boss_health -= 10
         if lazer.y < 0 and lazer in lazers:
             lazers.remove(lazer)
         for alien in alien_troops:
@@ -115,12 +118,15 @@ def update():
             score-=3
             alien_lazer.remove(laser)
 
-    
+
         elif laser.y > HEIGHT:
             alien_lazer.remove(laser)
-        
+    if score == 200:
+        final_boss()
+    if boss_health <= 0:
+        is_boss = False 
     if is_boss:
-        boss.y += 5
+        boss_movement()
 
     """ if final_boss():
         remove.alien_fleet()"""
@@ -135,5 +141,4 @@ def update():
         space_craft.x += 5
     if keyboard.a:
         space_craft.x -= 5   
-clock.schedule(final_boss,5.0)
 pgzrun.go()
