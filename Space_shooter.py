@@ -97,6 +97,7 @@ clock.schedule_interval(alien_fleet_movement,0.1)
 def on_key_down(key):
     if key == keys.SPACE:
         lazer=Actor("lazer_beam")
+        sounds.space_gun.play()
         lazers.append(lazer)
         lazers[-1].x=space_craft.x
         lazers[-1].y=space_craft.y
