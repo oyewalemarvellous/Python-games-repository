@@ -14,18 +14,20 @@ score= 0
 speed= 2
 boss_health= 500
 alien_troops=[]
+boss_lazer=[]
 game_over = False
 is_boss= False
-
+boss= Actor("mother_ship")
+# creates boss 
 def final_boss():
     global is_boss
     global boss 
-    boss= Actor("mother_ship")
     boss.pos= (WIDTH/2,100)
     is_boss= True
+    boss_shoot()
+# helps boss move
 def boss_movement():
-    boss.y += 0.1
-
+    boss.y += 0.3
 def alien_fleet():
     if not is_boss:
         for i in range(8):
@@ -44,6 +46,7 @@ def space_craft_collision():
             game_over = True """
         elif score < 0:  
             game_over= True 
+    
 def alien_shoot():
     if not is_boss:
         shooter=random.choice(alien_troops)
@@ -52,6 +55,14 @@ def alien_shoot():
         alien_lazer.append(laser)
         clock.schedule(alien_shoot,1.0)
 clock.schedule(alien_shoot,1.0)
+def boss_shoot():
+    if is_boss:
+        ammo = Actor("blue_lazer_beam")
+        x=random.randint(int(boss.x)-100,int(boss.x)+100)
+        ammo.pos= (x,boss.y)
+        boss_lazer.append(ammo)
+        clock.schedule(boss_shoot,5.0)
+
 def max_score():
     if score > 300:
         screen.clear()
@@ -74,6 +85,8 @@ def draw():
     screen.draw.text(str(boss_health),center= (560,10))
     if is_boss and boss_health  > 0:
         boss.draw()
+    for laser in boss_lazer:
+        laser.draw()
     max_score()
     for laser in alien_lazer:
         laser.draw()
@@ -97,6 +110,8 @@ def update():
     global boss_health
     global score
     global speed
+    global game_over
+
     if  game_over:
         return
     for lazer in lazers:
@@ -118,18 +133,24 @@ def update():
             score-=3
             alien_lazer.remove(laser)
 
-
         elif laser.y > HEIGHT:
             alien_lazer.remove(laser)
-    if score == 200:
+    for laser in boss_lazer:
+        laser.y +=4
+        if laser.colliderect(space_craft):
+            boss_lazer.remove(laser)
+            score -= 50
+    if space_craft.colliderect(boss):
+        game_over = True
+    if score == 50:
         final_boss()
-    if boss_health <= 0:
-        is_boss = False 
     if is_boss:
         boss_movement()
+    if boss_health <= 0:
+        is_boss = False 
+        boss_health = 500
+    
 
-    """ if final_boss():
-        remove.alien_fleet()"""
     
     space_craft_wallcollision()
     if not alien_troops:
