@@ -103,7 +103,7 @@ def space_craft_collision():
             game_over = True
         elif score < 0:
             game_over = True
-        elif alien.y ==  600:
+        elif alien.y >  600:
             game_over= True 
 
 # --- Drawing Functions ---
@@ -157,14 +157,14 @@ def update():
     # --- Player lasers ---
     for lazer in lazers[:]:
         lazer.y -= 3
-        if is_boss and boss.colliderect(lazer):
+        if is_boss and boss.colliderect(lazer) and lazer in lazers:
             lazers.remove(lazer)
             boss_health -= 10
-        elif lazer.y < 0:
+        elif lazer.y < 0 and lazer in lazers:
             lazers.remove(lazer)
         else:
-            for alien in alien_troops[:]:
-                if alien.colliderect(lazer):
+            for alien in alien_troops[:] :
+                if alien.colliderect(lazer) and lazer in lazers:
                     lazers.remove(lazer)
                     alien_troops.remove(alien)
                     score += 5
