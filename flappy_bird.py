@@ -9,10 +9,14 @@ wind = pygame.display.set_mode((800, 400))
 bg_img = pygame.image.load("flappy_bird_background.jpg")
 bg = pygame.transform.scale(bg_img, (800, 400))
 
-bird = pygame.image.load("flappy_bird_up.jpg")
+bird_up = pygame.image.load("flappy_bird_up.jpg")
+bird_down = pygame.image.load("flappy_bird_down.jpg")
+bird_up = pygame.transform.scale(bird_up, (60,45))
+bird_down = pygame.transform.scale(bird_down, (60,45))
+bird = bird_up
 bird_x = 15
 bird_y = height/2
-bird_rect = bird.get_rect()
+bird_rect = bird.get_rect(topleft = (bird_x ,bird_y))
 
 pipe_up = pygame.image.load("pipe_up.jpg")
 pipe_x = 400
@@ -20,7 +24,6 @@ pipe_y = 277
 pipe_down = pygame.image.load("pipe_down.jpg")
 pipe_down_y = -135
 pipe_list = []
-
 
 font = pygame.font.Font(None, 30)
 
@@ -42,8 +45,6 @@ def createpipe():
     pipe_list.append(rect)
     pipe_list.append(rect_2)
 
-
-
 while True:
 
     event = pygame.event.poll()
@@ -51,12 +52,14 @@ while True:
     if event.type == pygame.KEYDOWN:
         if event.key == pygame.K_SPACE:
             bird_y -= 20
-            bird = pygame.image.load("flappy_bird_down.jpg")
+            bird = bird_down 
+            bird_rect = bird.get_rect(topleft = (bird_x,bird_y))
             wind.blit(bird, (bird_x,bird_y))
             pygame.display.update()
     elif event.type == pygame.KEYUP:
         if event.key == pygame.K_SPACE:
-            bird = pygame.image.load("flappy_bird_up.jpg")
+            bird = bird_up
+            bird_rect = bird.get_rect(topleft = (bird_x,bird_y))
             wind.blit(bird,(bird_x,bird_y))
             pygame.display.update()
 
@@ -89,7 +92,6 @@ while True:
         
         count += 1
         
-
         if bird_rect.colliderect(p):
             game_over = True 
         
@@ -106,8 +108,3 @@ while True:
     wind.blit(text, (10, 10))
     wind.blit(bird, (bird_x, bird_y))
     pygame.display.update()
-
-
-
-
-
