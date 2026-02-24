@@ -47,21 +47,22 @@ def createpipe():
 
 while True:
 
-    event = pygame.event.poll()
-
-    if event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_SPACE:
-            bird_y -= 20
-            bird = bird_down 
-            bird_rect = bird.get_rect(topleft = (bird_x,bird_y))
-            wind.blit(bird, (bird_x,bird_y))
-            pygame.display.update()
-    elif event.type == pygame.KEYUP:
-        if event.key == pygame.K_SPACE:
-            bird = bird_up
-            bird_rect = bird.get_rect(topleft = (bird_x,bird_y))
-            wind.blit(bird,(bird_x,bird_y))
-            pygame.display.update()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            exit() 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                bird_y -= 20
+                bird = bird_down 
+                bird_rect = bird.get_rect(topleft = (bird_x,bird_y))
+                wind.blit(bird, (bird_x,bird_y))
+                pygame.display.update()
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_SPACE:
+                bird = bird_up
+                bird_rect = bird.get_rect(topleft = (bird_x,bird_y))
+                wind.blit(bird,(bird_x,bird_y))
+                pygame.display.update()
 
     wind.blit(bg, (i, 0))
     wind.blit(bg, (width + i, 0))
@@ -77,12 +78,12 @@ while True:
     bird_rect.topleft = (bird_x, bird_y)
 
     timer += 1
-    if timer > 120:
+    if timer > 150:
         createpipe()
         timer = 0
 
     count = 0
-
+    
     for p in pipe_list:
         p.x -=1
         if count % 2 == 0:
