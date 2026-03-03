@@ -7,7 +7,16 @@ wind = pygame.display.set_mode((800,600))
 bg_img = pygame.image.load("renewable.jpg")
 bg = pygame.transform.scale(bg_img, (800,600))
 
+game_ovr = pygame.image.load("gameoverscreen.jpg")
+game = pygame.transform.scale(game_ovr, (800,600))
+
+win_img = pygame.image.load("mission_complete.jpg")
+win = pygame.transform.scale(win_img, (800,600) )
+
 score = 0
+start_time = time.time()
+
+lives = 3
 
 font = pygame.font.SysFont("Times new roman",20)
 
@@ -67,7 +76,11 @@ while True:
         if event.type == pygame.QUIT:
             exit()
 
-    score_text = font.render("Score : " + str(score), True, "white")
+    timer = time.time() - start_time
+
+    score_text = font.render("Score : " + str(score), True, "black")
+    timer_text = font.render("timer : " + str(60 - int(timer)), True, "black")
+    live_text = font.render("lives : " + str(lives), True, "black")
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_s]:
@@ -82,13 +95,26 @@ while True:
     collide_recycle = pygame.sprite.spritecollide(bin,recycle_group, True)
     collide_nonerecycle = pygame.sprite.spritecollide(bin, none_recycle_group, True)
 
+
     for k in collide_recycle:
         score += 1 
     for k in collide_nonerecycle:
-        score -= 1
-
+        lives -= 1
+     
+    if score == 34:
+        wind.blit(win, (0,0))
+        pygame.display.update()
+        time.sleep(5.0)
+        break
+    
     wind.blit(bg, (0,0))
     all_images.draw(wind)
     wind.blit(score_text, (10,10))
+    wind.blit(live_text, (10,30))
+    wind.blit(timer_text, (10,50))
+
+    if lives == 0 or timer >= 60 :
+        wind.blit(game,(0,0))
+
     pygame.display.update()       
         
