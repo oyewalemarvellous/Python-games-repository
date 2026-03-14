@@ -33,38 +33,46 @@ size = 20
 
 wall_group = pygame.sprite.Group()
 
+class Walls(pygame.sprite.Sprite):
+    def __init__(self,x,y,color):
+        super().__init__()
+        self.image = pygame.draw.rect(wind, color, (size * x, size *y, size,size))
 
 food_group = pygame.sprite.Group()
+
 class Food(pygame.sprite.Sprite):
     def __init__(self,x,y):
         super().__init__()
         pygame.draw.circle(wind,green, ( size*x + size//2, size*y +size//2),5 )
 
-
 for i in range(len(maze)):
     for j in range(len(maze[i])):
         if maze[i][j] == 1:
-            pygame.draw.rect(wind, blue,( size*j, size*i, size,size) )
+            wall_group.add(Walls(j,i,blue))
         elif maze[i][j] == 2:
-            pygame.draw.rect(wind, green, (size*j,size*i, size,size))
-
+            wall_group.add(Walls(j,i,green))
         else:
-           dot = Food(j,i)
-           food_group.add(dot)
+           food_group.add(Food(j,i))
 
-"""class Pac_man(pygame.sprite.Sprite):
+class Pac_man(pygame.sprite.Sprite):
     def __init__(self,x,y):
         super().__init__()
-        self.image = pygame.image.load("pac_man_open.jpg")
+        self.image = pygame.image.load("pac_man_open_left.jpg")
         self.image = pygame.transform.scale(self.image, (20,20))
         self.x = x
         self.y = y
         self.rect = self.image.get_rect()
-        self.rect.topleft = (self.x,self.y)"""
+        self.rect.topleft = (self.x,self.y)
 
-image = pygame.sprite.Group()
-#man = Pac_man( 260,260)
-#image.add(man)
+    def change_image(self,image):
+        self.image = pygame.image.load(image)
+        self.image = pygame.transform.scale(self.image, (20,20))
+
+images = pygame.sprite.Group()
+
+
+man = Pac_man( 260,260)
+images.add(man)
 
 running = True
 
@@ -73,14 +81,27 @@ while running:
         if event.type == pygame.QUIT:
             exit()
         
-        """if event.type == pygame.KEYDOWN:
+        if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                man = pygame.image.load("pac_man_open_left.jpg")
-                man.rect.y =
-                
-    
-    keys = pygame.key.get_pressed()"""
+                man.change_image("pac_man_open_left.jpg")
+                man.rect.x -= 5
+                images.empty()
+                images.add(man)
+            if event.key == pygame.K_RIGHT  :
+                man.change_image("pac_man_open_right.jpg")
+                man.rect.x += 5
+                images.empty()
+                images.add(man)
+            if event.key == pygame.K_UP:
+                man.change_image("pac_man_open_up.jpg")
+                man.rect.y -= 5
+                images.empty()
+                images.add(man)
+            if event.key == pygame.K_DOWN:
+                man.change_image("pac_man_open_down.jpg")
+                man.rect.y -= 5
+                images.empty()
+                images.add(man) 
 
-
-    image.draw(wind)
+    images.draw(wind)
     pygame.display.update()
